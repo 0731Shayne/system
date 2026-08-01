@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "SYSTEM ATLAS — 交互式工程系统框图",
-  description: "六套原创 SVG 工程系统框图，点击功能模块即可查看对应的 TI 公开产品与官方资料。",
+  title: "交互式系统框图 — 空调室内机与咖啡机",
+  description: "两套完整原创 SVG 工程框图，点击功能模块查看对应的 TI 公开产品。",
   icons: { icon: "./favicon.svg", shortcut: "./favicon.svg" },
   openGraph: {
-    title: "SYSTEM ATLAS — 交互式工程系统框图",
-    description: "原创 SVG 系统架构、可点击产品映射与 TI 官方资料入口。",
+    title: "交互式系统框图",
+    description: "空调室内机与咖啡机完整工程架构及产品映射。",
     type: "website",
   },
 };

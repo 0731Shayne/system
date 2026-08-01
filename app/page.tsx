@@ -4,267 +4,239 @@ import { CSSProperties, KeyboardEvent, useMemo, useState } from "react";
 
 type Product = {
   id: string;
-  name: string;
   category: string;
   description: string;
-  url: string;
 };
 
 type DiagramNode = {
   id: string;
   title: string;
-  functions: string[];
+  items: string[];
   x: number;
   y: number;
   width: number;
   height: number;
+  columns?: number;
   products?: string[];
   passive?: boolean;
+  load?: boolean;
 };
 
 type Diagram = {
   id: string;
-  number: string;
   name: string;
-  subtitle: string;
-  description: string;
+  source: string;
   nodes: DiagramNode[];
-  links: Array<[string, string]>;
+  paths: string[];
 };
 
-const ti = (id: string, name: string, category: string, description: string): Product => ({
-  id,
-  name,
-  category,
-  description,
-  url: `https://www.ti.com/product/${id}`,
-});
+const product = (id: string, category: string, description: string): Product => ({ id, category, description });
 
 const PRODUCTS: Record<string, Product> = {
-  UCC21520: ti("UCC21520", "UCC21520", "隔离式栅极驱动器", "增强型隔离双通道栅极驱动器，适合半桥功率级。"),
-  UCC21750: ti("UCC21750", "UCC21750", "隔离式栅极驱动器", "带集成保护与传感功能的单通道隔离式栅极驱动器。"),
-  ISO7741: ti("ISO7741", "ISO7741", "数字隔离器", "四通道增强型数字隔离器，用于控制域与高压域信号隔离。"),
-  ISO7762: ti("ISO7762", "ISO7762", "数字隔离器", "六通道增强型数字隔离器，适合多路 PWM 和状态信号。"),
-  AMC1300: ti("AMC1300", "AMC1300", "隔离式放大器", "增强型隔离精密放大器，用于分流电阻电流检测。"),
-  INA240: ti("INA240", "INA240", "电流检测放大器", "支持宽共模范围的双向电流检测放大器。"),
-  TMCS1100: ti("TMCS1100", "TMCS1100", "霍尔效应电流传感器", "集成霍尔效应隔离的电流检测器件。"),
-  F280039C: ti("TMS320F280039C", "TMS320F280039C", "C2000™ 实时 MCU", "面向数字电源与电机控制的 C2000 实时微控制器。"),
-  F280049C: ti("TMS320F280049C", "TMS320F280049C", "C2000™ 实时 MCU", "集成控制加速功能的 C2000 实时微控制器。"),
-  F28379D: ti("TMS320F28379D", "TMS320F28379D", "C2000™ 双核实时 MCU", "适合多轴工业控制和高性能电力电子控制。"),
-  ISO1042: ti("ISO1042", "ISO1042", "隔离式 CAN 收发器", "增强型隔离 CAN 收发器，用于高压系统通信接口。"),
-  ISO1410: ti("ISO1410", "ISO1410", "隔离式 RS-485 收发器", "增强型隔离 RS-485/RS-422 收发器。"),
-  THVD1450: ti("THVD1450", "THVD1450", "RS-485 收发器", "面向工业通信的半双工 RS-485 收发器。"),
-  TCAN1042H: ti("TCAN1042H", "TCAN1042H", "CAN 收发器", "具有故障保护能力的高速 CAN 收发器。"),
-  TPS54202: ti("TPS54202", "TPS54202", "降压转换器", "适合低压控制与接口电源轨的同步降压转换器。"),
-  LM5164: ti("LM5164", "LM5164", "宽输入降压转换器", "面向高压辅助电源的宽输入同步降压转换器。"),
-  UCC28740: ti("UCC28740", "UCC28740", "反激控制器", "用于隔离式辅助电源的反激控制器。"),
-  UCC28180: ti("UCC28180", "UCC28180", "PFC 控制器", "连续导通模式升压功率因数校正控制器。"),
-  UCC28070: ti("UCC28070", "UCC28070", "交错式 PFC 控制器", "双相交错式功率因数校正控制器。"),
-  BQ79616: ti("BQ79616", "BQ79616", "电池监测器与均衡器", "面向高压电池堆的 16 节串联电池监测与均衡器。"),
-  BQ76952: ti("BQ76952", "BQ76952", "电池监测器与保护器", "面向多节串联电池组的高度集成监测和保护器件。"),
-  BQ79600Q1: ti("BQ79600-Q1", "BQ79600-Q1", "电池通信桥接器", "用于主机与电池监测菊花链之间的通信桥接器。"),
-  TPSI3050Q1: ti("TPSI3050-Q1", "TPSI3050-Q1", "隔离式开关驱动器", "集成隔离电源的隔离式开关驱动器。"),
-  UCC12050: ti("UCC12050", "UCC12050", "隔离式 DC/DC", "集成变压器的隔离式直流/直流电源模块。"),
+  LMP93601: product("LMP93601", "传感器信号调节器", "面向热电堆传感器的低噪声三通道模拟前端。"),
+  OPT3004: product("OPT3004", "数字环境光传感器", "具有增强红外抑制能力的数字环境光传感器。"),
+  IWRL6432AOP: product("IWRL6432AOP", "毫米波雷达传感器", "集成天线的低功耗 57GHz 至 63.5GHz 雷达传感器。"),
+  HDC3021: product("HDC3021", "湿度传感器", "高精度数字湿度和温度传感器。"),
+  TMP103: product("TMP103", "数字温度传感器", "支持低压供电和 I²C 接口的小型温度传感器。"),
+  OPT3101: product("OPT3101", "接近传感器 AFE", "基于 ToF 的远距离接近和距离传感模拟前端。"),
+  TMUX4051: product("TMUX4051", "模拟多路复用器", "8:1 单通道模拟多路复用器，兼容 1.8V 逻辑。"),
+  OPA2320: product("OPA2320", "精密运算放大器", "双通道、20MHz、低偏置电流精密运算放大器。"),
+  REF1933: product("REF1933", "电压基准", "具有 VREF 与 VREF/2 双输出的 3.3V 电压基准。"),
+  MSPM0G1506: product("MSPM0G1506", "通用 MCU", "80MHz Cortex-M0+ MCU，集成双 ADC、DAC 和模拟外设。"),
+  TMS320F2800132: product("TMS320F2800132", "C2000™ 实时 MCU", "具有六路 PWM 的 100MHz 实时控制 MCU。"),
+  LM5021: product("LM5021", "交流/直流控制器", "30V、1MHz 电流模式 PWM 控制器。"),
+  UCC28881: product("UCC28881", "离线电源开关", "700V、极低静态电流离线开关。"),
+  UCC28910: product("UCC28910", "反激式开关", "带初级侧调节的 700V 恒压恒流反激式开关。"),
+  TPS1641: product("TPS1641", "电子保险丝", "2.7V 至 40V、带输出功率限制的电子保险丝。"),
+  TPS2595: product("TPS2595", "电子保险丝", "2.7V 至 18V、带过压保护的低阻电子保险丝。"),
+  TPS542021: product("TPS542021", "同步降压转换器", "4.5V 至 30V 输入、2A 同步降压转换器。"),
+  TPS65023B: product("TPS65023B", "多通道 PMIC", "集成三个 DC/DC、三个 LDO 和 I²C 接口的 PMIC。"),
+  TLV709: product("TLV709", "低压降稳压器", "30V 输入、低静态电流 150mA LDO。"),
+  TPS61165: product("TPS61165", "背光 LED 驱动器", "高亮度白光 LED 升压驱动器。"),
+  LP5018: product("LP5018", "RGB LED 驱动器", "18 通道 I²C 恒流 RGB LED 驱动器。"),
+  TPS65105: product("TPS65105", "LCD 偏置电源", "集成升压、电荷泵和 LDO 控制器的 LCD 偏置电源。"),
+  TLV803E: product("TLV803E", "电压监控器", "低功耗、低电平有效开漏输出电压监控器。"),
+  TPS3700: product("TPS3700", "窗口电压检测器", "用于过压和欠压监测的 18V 窗口检测器。"),
+  SN65HVD3082E: product("SN65HVD3082E", "RS-485 收发器", "面向工业总线的半双工 RS-485 收发器。"),
+  TPD2E001: product("TPD2E001", "ESD 保护", "双通道、低电容 ESD 保护二极管。"),
+  TCA9535: product("TCA9535", "I²C I/O 扩展器", "具有中断和配置寄存器的 16 位 I/O 扩展器。"),
+  CC3351MOD: product("CC3351MOD", "Wi-Fi 6 与蓝牙模块", "双频 Wi-Fi 6 与低功耗蓝牙配套模块。"),
+  CC2340R2: product("CC2340R2", "2.4GHz 无线 MCU", "低待机功耗的蓝牙、Zigbee 和 Thread 无线 MCU。"),
+  MSP430FR2633: product("MSP430FR2633", "电容式触控 MCU", "支持最多 64 个传感器的 CapTIvate™ 触控 MCU。"),
+  LDC1614: product("LDC1614", "电感数字转换器", "四通道、28 位高分辨率电感数字转换器。"),
+  DRV2605L: product("DRV2605L", "触觉驱动器", "集成波形库与自动谐振跟踪的 ERM/LRA 驱动器。"),
+  DRV8421: product("DRV8421", "步进电机驱动器", "18V、2A 双通道 H 桥电机驱动器。"),
+  DRV110: product("DRV110", "电磁阀驱动器", "集成电流调节的单通道继电器低侧驱动器。"),
+  TPL7407L: product("TPL7407L", "低侧开关", "40V、七通道 NMOS 阵列低侧驱动器。"),
+  UCC27624: product("UCC27624", "低侧栅极驱动器", "30V、5A 双通道低侧栅极驱动器。"),
+  INA240: product("INA240", "电流检测放大器", "具备增强 PWM 抑制的双向精密电流检测放大器。"),
+  DRV5013: product("DRV5013", "霍尔效应锁存器", "38V、高带宽霍尔效应锁存器。"),
+  INA2180: product("INA2180", "电流检测放大器", "26V、双通道 350kHz 电流检测放大器。"),
+  LM2903B: product("LM2903B", "比较器", "工业级双通道标准比较器。"),
+  OPA320: product("OPA320", "精密运算放大器", "20MHz、低偏置电流、RRIO 精密运算放大器。"),
+  FDC1004: product("FDC1004", "电容数字转换器", "带有源屏蔽驱动的四通道 16 位电容数字转换器。"),
+  FDC2214: product("FDC2214", "电容数字转换器", "四通道、28 位电容数字转换器。"),
+  INA180: product("INA180", "电流检测放大器", "26V、350kHz 模拟电流检测放大器。"),
+  OPA2376: product("OPA2376", "精密运算放大器", "双通道、低噪声、低静态电流精密运算放大器。"),
+  REF1930: product("REF1930", "电压基准", "具有 VREF 与 VREF/2 双输出的 3V 电压基准。"),
+  MSPM0G1519: product("MSPM0G1519", "通用 MCU", "80MHz Cortex-M0+ MCU，具有双 ADC、DAC 和大容量存储器。"),
+  MSPM0C1104: product("MSPM0C1104", "通用 MCU", "紧凑型 24MHz Cortex-M0+ MCU。"),
+  TLV803: product("TLV803", "电压监控器", "三引脚、低电平有效开漏复位监控器。"),
+  MAX3232E: product("MAX3232E", "RS-232 收发器", "带 ±15kV ESD 保护的双通道 RS-232 收发器。"),
+  CC3200MOD: product("CC3200MOD", "Wi-Fi 模块", "SimpleLink™ Wi-Fi 与物联网无线模块。"),
+  DRV8304: product("DRV8304", "三相栅极驱动器", "40V 三相智能栅极驱动器，集成电流分流放大器。"),
+  DRV8215: product("DRV8215", "有刷电机驱动器", "11V、4A 半桥电机驱动器，支持无传感器堵转检测。"),
+  DRV8234: product("DRV8234", "有刷电机驱动器", "38V、2A H 桥电机驱动器，支持纹波计数。"),
+  DRV8424: product("DRV8424", "步进电机驱动器", "35V、2.5A 双极步进电机驱动器。"),
+  UCC27735: product("UCC27735", "半桥栅极驱动器", "700V、4A 半桥栅极驱动器。"),
+  DRV5023: product("DRV5023", "霍尔效应开关", "38V、高带宽单极霍尔效应开关。"),
+  INA181: product("INA181", "电流检测放大器", "26V、双向 350kHz 电流检测放大器。"),
+  LM393A: product("LM393A", "比较器", "工业级精密双通道差分比较器。"),
+  REF1925: product("REF1925", "电压基准", "具有 VREF 与 VREF/2 双输出的 2.5V 电压基准。"),
 };
+
+const AIR_NODES: DiagramNode[] = [
+  { id: "ac", title: "交流输入", items: ["AC 220V"], x: 18, y: 34, width: 86, height: 66, passive: true },
+  { id: "input-protection", title: "输入电源保护", items: ["保险丝", "浪涌吸收", "浪涌电流限制", "EMI 滤波"], x: 132, y: 22, width: 190, height: 116, columns: 2, passive: true },
+  { id: "acdc", title: "交流/直流电源", items: ["整流桥", "PWM 控制", "隔离反激", "电压反馈"], x: 365, y: 22, width: 190, height: 116, columns: 2, products: ["LM5021", "UCC28881", "UCC28910"] },
+  { id: "gating", title: "电源保护与门控", items: ["电子保险丝", "负载开关"], x: 600, y: 30, width: 148, height: 100, products: ["TPS1641", "TPS2595"] },
+  { id: "rails", title: "低压电源树", items: ["DC/DC", "多通道 PMIC", "LDO"], x: 792, y: 22, width: 160, height: 116, products: ["TPS542021", "TPS65023B", "TLV709"] },
+  { id: "sensors", title: "环境与人体传感", items: ["温度", "湿度", "空气质量", "环境光", "接近", "人体存在", "3D ToF", "红外"], x: 25, y: 210, width: 178, height: 254, products: ["LMP93601", "OPT3004", "IWRL6432AOP", "HDC3021", "TMP103", "OPT3101"] },
+  { id: "afe", title: "模拟前端", items: ["MUX", "AMP", "ADC", "REF"], x: 258, y: 257, width: 166, height: 126, columns: 2, products: ["LMP93601", "TMUX4051", "OPA2320", "REF1933"] },
+  { id: "mcu", title: "数字处理", items: ["主控 MCU", "存储器", "实时控制"], x: 480, y: 246, width: 166, height: 140, products: ["MSPM0G1506", "TMS320F2800132"] },
+  { id: "display", title: "显示与声音输出", items: ["LCD / LED", "背光驱动", "电平转换", "音频输出"], x: 713, y: 202, width: 214, height: 158, columns: 2, products: ["TPS61165", "LP5018", "TPS65105"] },
+  { id: "loads", title: "输出负载", items: ["显示屏", "扬声器", "蜂鸣器", "辅助加热"], x: 966, y: 202, width: 118, height: 158, passive: true, load: true },
+  { id: "monitor", title: "系统监测", items: ["看门狗", "温度保护", "复位", "电压监控"], x: 480, y: 438, width: 166, height: 136, products: ["TLV803E", "TPS3700"] },
+  { id: "wired", title: "有线通信", items: ["RS-485", "CAN", "UART", "HomeBus", "隔离", "接口保护"], x: 25, y: 516, width: 202, height: 194, columns: 2, products: ["SN65HVD3082E", "TPD2E001", "TCA9535"] },
+  { id: "wireless", title: "无线通信", items: ["Wi-Fi 6", "Bluetooth LE", "2.4GHz RF"], x: 274, y: 578, width: 168, height: 124, products: ["CC3351MOD", "CC2340R2"] },
+  { id: "input-ui", title: "用户输入", items: ["手势识别", "触摸按键", "旋钮", "电容/电感感应"], x: 480, y: 624, width: 196, height: 136, columns: 2, products: ["MSP430FR2633", "LDC1614", "DRV2605L"] },
+  { id: "power-stage", title: "继电器与功率级", items: ["继电器驱动", "Triac", "栅极驱动", "MOSFET / IGBT"], x: 724, y: 414, width: 198, height: 162, columns: 2, products: ["DRV8421", "DRV110", "TPL7407L", "UCC27624"] },
+  { id: "motor-drive", title: "风机与风门驱动", items: ["步进驱动", "BDC 驱动", "BLDC 驱动", "霍尔反馈"], x: 724, y: 620, width: 198, height: 140, columns: 2, products: ["DRV8421", "INA240", "DRV5013"] },
+  { id: "actuators", title: "执行器", items: ["横向摆叶 M", "纵向摆叶 M", "贯流风机 M", "无刷风机 M"], x: 966, y: 596, width: 118, height: 164, passive: true, load: true },
+  { id: "sense", title: "电流与电压检测", items: ["电流采样", "电压采样", "比较器", "基准"], x: 724, y: 790, width: 198, height: 132, columns: 2, products: ["INA2180", "LM2903B", "OPA320"] },
+];
+
+const COFFEE_NODES: DiagramNode[] = [
+  { id: "ac", title: "交流输入", items: ["AC 220V"], x: 18, y: 34, width: 86, height: 66, passive: true },
+  { id: "input-protection", title: "输入电源保护", items: ["保险丝", "压敏电阻", "浪涌限制", "EMI 滤波"], x: 132, y: 22, width: 190, height: 116, columns: 2, passive: true },
+  { id: "acdc", title: "辅助电源", items: ["整流桥", "PWM 控制", "隔离反激", "同步整流"], x: 365, y: 22, width: 190, height: 116, columns: 2, products: ["UCC28881", "UCC28910", "LM5021"] },
+  { id: "gating", title: "电源保护与门控", items: ["电子保险丝", "负载开关"], x: 600, y: 30, width: 148, height: 100, products: ["TPS2595", "TPS1641"] },
+  { id: "rails", title: "低压电源树", items: ["DC/DC", "LDO", "模拟电源"], x: 792, y: 22, width: 160, height: 116, products: ["TPS542021", "TPS65023B", "TLV709"] },
+  { id: "sensors", title: "过程传感器", items: ["水位", "温度", "杯体接近", "上盖状态", "流量", "压力"], x: 25, y: 214, width: 178, height: 198, columns: 2, products: ["DRV5013", "OPT3101", "FDC1004"] },
+  { id: "afe", title: "模拟前端", items: ["MUX", "AMP", "ADC", "比较器"], x: 258, y: 246, width: 166, height: 126, columns: 2, products: ["INA180", "OPA2376", "REF1930"] },
+  { id: "mcu", title: "数字处理", items: ["主控 MCU", "时序控制", "故障管理"], x: 480, y: 236, width: 166, height: 140, products: ["MSPM0G1519", "MSPM0C1104"] },
+  { id: "power-stage", title: "电机与负载功率级", items: ["泵电机驱动", "奶泡电机驱动", "磨豆电机驱动", "阀组驱动", "加热器驱动", "继电器驱动"], x: 735, y: 196, width: 220, height: 236, columns: 2, products: ["DRV8304", "DRV8215", "DRV8234", "DRV110", "DRV8424", "UCC27735"] },
+  { id: "loads", title: "执行负载", items: ["水泵 M", "奶泡器 M", "磨豆机 M", "电磁阀", "加热盘", "蜂鸣器"], x: 990, y: 196, width: 110, height: 236, passive: true, load: true },
+  { id: "monitor", title: "系统监测", items: ["看门狗", "欠压复位", "过温保护"], x: 480, y: 430, width: 166, height: 124, products: ["TLV803", "TPS3700"] },
+  { id: "wired", title: "有线接口", items: ["UART", "I²C", "SPI", "接口保护"], x: 25, y: 470, width: 178, height: 146, columns: 2, products: ["TCA9535", "MAX3232E", "TPD2E001"] },
+  { id: "wireless", title: "无线连接", items: ["Wi-Fi", "Bluetooth LE"], x: 25, y: 662, width: 178, height: 104, products: ["CC3200MOD", "CC2340R2"] },
+  { id: "input-ui", title: "用户输入", items: ["电容触摸", "旋钮", "按键", "触觉反馈"], x: 258, y: 470, width: 184, height: 146, columns: 2, products: ["MSP430FR2633", "FDC2214", "DRV2605L"] },
+  { id: "output-ui", title: "显示与声音输出", items: ["LCD / LED", "背光驱动", "RGB 指示", "音频输出"], x: 258, y: 662, width: 184, height: 132, columns: 2, products: ["TPS61165", "LP5018", "TPS65105"] },
+  { id: "position", title: "位置与转速反馈", items: ["磁性检测", "霍尔开关", "堵转检测"], x: 735, y: 488, width: 220, height: 124, products: ["DRV5013", "DRV5023", "DRV8215"] },
+  { id: "sense", title: "电流与电压检测", items: ["电流采样", "电压采样", "比较器", "电压基准"], x: 735, y: 666, width: 220, height: 132, columns: 2, products: ["INA181", "LM393A", "REF1925"] },
+];
 
 const diagrams: Diagram[] = [
   {
-    id: "home-hvac", number: "01", name: "家用变频空调", subtitle: "电源、传感、控制、隔离通信与双电机驱动",
-    description: "展示室内机与室外机之间的完整控制链路，突出高压功率级、低压控制域和隔离通信边界。",
-    nodes: [
-      { id: "ac", title: "交流输入", functions: ["EMI / Surge", "Rectifier"], x: 28, y: 92, width: 150, height: 82, passive: true },
-      { id: "pfc", title: "功率因数校正", functions: ["PFC Controller"], x: 225, y: 72, width: 170, height: 102, products: ["UCC28180", "UCC28070"] },
-      { id: "dc", title: "高压直流母线", functions: ["Bus Monitor", "Protection"], x: 450, y: 92, width: 165, height: 82, products: ["AMC1300", "INA240"] },
-      { id: "ipm", title: "压缩机功率级", functions: ["Isolated Gate Driver", "Current Sense"], x: 680, y: 58, width: 210, height: 116, products: ["UCC21520", "UCC21750", "AMC1300", "TMCS1100"] },
-      { id: "motor", title: "压缩机电机", functions: ["PMSM"], x: 970, y: 92, width: 150, height: 82, passive: true },
-      { id: "fan", title: "风机驱动", functions: ["3-Phase Driver", "Current Sense"], x: 680, y: 250, width: 210, height: 108, products: ["UCC21520", "INA240"] },
-      { id: "fanmotor", title: "风机电机", functions: ["BLDC"], x: 970, y: 266, width: 150, height: 82, passive: true },
-      { id: "mcu", title: "实时控制器", functions: ["Motor Control", "System Control"], x: 420, y: 300, width: 210, height: 112, products: ["F280039C", "F280049C"] },
-      { id: "sense", title: "环境与系统感知", functions: ["Temperature", "Pressure / Flow"], x: 90, y: 300, width: 220, height: 112, products: ["INA240", "TMCS1100"] },
-      { id: "comms", title: "室内 / 室外机通信", functions: ["Isolated CAN", "Isolated RS-485"], x: 350, y: 500, width: 250, height: 112, products: ["ISO1042", "ISO1410", "ISO7741"] },
-      { id: "aux", title: "辅助电源树", functions: ["Flyback", "HV Buck", "Point-of-Load"], x: 700, y: 490, width: 270, height: 122, products: ["UCC28740", "LM5164", "TPS54202", "UCC12050"] },
-      { id: "ui", title: "用户与楼宇接口", functions: ["Display", "Wireless / Bus"], x: 85, y: 510, width: 210, height: 102, products: ["THVD1450", "TCAN1042H"] },
+    id: "air-indoor",
+    name: "空调室内机",
+    source: "https://www.ti.com.cn/solution/cn/air-conditioner-indoor-unit?variantid=34874&subsystemid=16093",
+    nodes: AIR_NODES,
+    paths: [
+      "M104 67H132", "M322 67H365", "M555 67H600", "M748 67H792",
+      "M203 335H258", "M424 320H480", "M646 310H713", "M927 280H966",
+      "M563 386V438", "M563 438V400H820V414", "M646 316H680V495H724",
+      "M227 613H250V316H258", "M442 640H460V316H480", "M676 692H695V535H724",
+      "M922 495H966", "M922 690H966", "M823 620V576", "M823 790V760",
+      "M875 138V175H563V246", "M845 138V184H820V202", "M872 360V414",
     ],
-    links: [["ac","pfc"],["pfc","dc"],["dc","ipm"],["ipm","motor"],["dc","fan"],["fan","fanmotor"],["mcu","ipm"],["mcu","fan"],["sense","mcu"],["comms","mcu"],["ui","comms"],["dc","aux"],["aux","mcu"]],
   },
   {
-    id: "commercial-hvac", number: "02", name: "商用多联机空调", subtitle: "多机总线、双功率级、隔离采样与集中控制",
-    description: "面向多联机系统的分层架构：中央控制器协调压缩机、风机、阀组以及多个室内机节点。",
-    nodes: [
-      { id: "grid", title: "三相交流输入", functions: ["EMI Filter", "Surge Protection"], x: 25, y: 80, width: 160, height: 88, passive: true },
-      { id: "rectifier", title: "整流与 PFC", functions: ["Interleaved PFC", "Bus Sense"], x: 225, y: 62, width: 205, height: 106, products: ["UCC28070", "AMC1300"] },
-      { id: "bus", title: "直流母线", functions: ["Voltage Sense", "Precharge"], x: 480, y: 80, width: 170, height: 88, products: ["AMC1300", "TPSI3050Q1"] },
-      { id: "compressor", title: "压缩机逆变器", functions: ["6× Gate Drive", "Phase Current"], x: 710, y: 48, width: 220, height: 120, products: ["UCC21750", "ISO7762", "INA240"] },
-      { id: "compressor-motor", title: "压缩机", functions: ["PMSM"], x: 990, y: 78, width: 160, height: 90, passive: true },
-      { id: "fan-drive", title: "室外风机逆变器", functions: ["Gate Drive", "Current Sense"], x: 710, y: 250, width: 220, height: 108, products: ["UCC21520", "TMCS1100"] },
-      { id: "fan-motor", title: "室外风机", functions: ["BLDC"], x: 990, y: 260, width: 160, height: 88, passive: true },
-      { id: "controller", title: "中央实时控制", functions: ["Dual Motor Control", "System Sequencing"], x: 435, y: 286, width: 230, height: 118, products: ["F28379D", "F280049C"] },
-      { id: "indoor", title: "室内机节点 × N", functions: ["Local MCU", "Valve / Fan Drive"], x: 35, y: 286, width: 220, height: 112, products: ["F280039C", "TPS54202"] },
-      { id: "bus-comms", title: "楼宇与多机总线", functions: ["Isolated RS-485", "CAN"], x: 90, y: 500, width: 245, height: 110, products: ["ISO1410", "TCAN1042H", "ISO7741"] },
-      { id: "safety", title: "隔离采样与保护", functions: ["Current / Voltage", "Fault Isolation"], x: 430, y: 500, width: 230, height: 110, products: ["AMC1300", "INA240", "ISO7741"] },
-      { id: "power-tree", title: "多域辅助电源", functions: ["Flyback", "Isolated DC/DC", "Buck"], x: 760, y: 490, width: 280, height: 120, products: ["UCC28740", "UCC12050", "LM5164"] },
+    id: "coffee-machine",
+    name: "咖啡机",
+    source: "https://www.ti.com/solution/coffee-machine",
+    nodes: COFFEE_NODES,
+    paths: [
+      "M104 67H132", "M322 67H365", "M555 67H600", "M748 67H792",
+      "M203 313H258", "M424 309H480", "M646 306H735", "M955 314H990",
+      "M563 376V430", "M646 306H690V314H735", "M203 543H235V309H258",
+      "M203 714H224V543H258", "M442 543H462V306H480", "M442 728H462V306H480",
+      "M646 306H690V550H735", "M845 488V432", "M845 666V612", "M872 138V168H563V236",
     ],
-    links: [["grid","rectifier"],["rectifier","bus"],["bus","compressor"],["compressor","compressor-motor"],["bus","fan-drive"],["fan-drive","fan-motor"],["controller","compressor"],["controller","fan-drive"],["indoor","controller"],["bus-comms","indoor"],["bus-comms","controller"],["safety","controller"],["bus","power-tree"],["power-tree","controller"]],
-  },
-  {
-    id: "string-inverter", number: "03", name: "三相组串逆变器", subtitle: "多路 MPPT、隔离驱动、并网逆变与保护通信",
-    description: "从光伏组串输入到并网输出的完整功率路径，控制器同时管理 MPPT、直流母线、三相逆变和并网保护。",
-    nodes: [
-      { id: "pv", title: "光伏组串 × N", functions: ["String Inputs", "Surge Protection"], x: 25, y: 85, width: 175, height: 90, passive: true },
-      { id: "mppt", title: "多路升压 MPPT", functions: ["Isolated Driver", "Current / Voltage Sense"], x: 245, y: 58, width: 235, height: 117, products: ["UCC21750", "AMC1300", "INA240"] },
-      { id: "hvbus", title: "高压直流链路", functions: ["Bus Sense", "Discharge / Relay"], x: 530, y: 78, width: 200, height: 97, products: ["AMC1300", "TPSI3050Q1"] },
-      { id: "bridge", title: "三相逆变桥", functions: ["6× Isolated Gate Drive", "Phase Current Sense"], x: 785, y: 48, width: 245, height: 127, products: ["UCC21520", "UCC21750", "ISO7762", "TMCS1100"] },
-      { id: "grid-filter", title: "并网滤波与继电器", functions: ["LCL Filter", "Grid Relay"], x: 1060, y: 78, width: 130, height: 97, passive: true },
-      { id: "controller", title: "数字电源控制器", functions: ["MPPT Control", "Grid Control", "Protection"], x: 440, y: 300, width: 300, height: 120, products: ["F28379D", "F280049C"] },
-      { id: "input-sense", title: "输入侧采样", functions: ["PV Voltage", "String Current"], x: 100, y: 300, width: 210, height: 105, products: ["AMC1300", "INA240"] },
-      { id: "grid-sense", title: "电网侧采样", functions: ["Grid Voltage", "Phase Current"], x: 830, y: 300, width: 220, height: 105, products: ["AMC1300", "TMCS1100"] },
-      { id: "comms", title: "监控与并机通信", functions: ["Isolated CAN", "RS-485"], x: 80, y: 505, width: 240, height: 108, products: ["ISO1042", "ISO1410", "THVD1450"] },
-      { id: "aux", title: "隔离辅助电源", functions: ["Flyback", "Isolated Bias", "Buck"], x: 450, y: 495, width: 280, height: 118, products: ["UCC28740", "UCC12050", "LM5164", "TPS54202"] },
-      { id: "safety", title: "安全与接口隔离", functions: ["Digital Isolation", "Relay Drive"], x: 850, y: 505, width: 230, height: 108, products: ["ISO7741", "ISO7762", "TPSI3050Q1"] },
-    ],
-    links: [["pv","mppt"],["mppt","hvbus"],["hvbus","bridge"],["bridge","grid-filter"],["input-sense","controller"],["grid-sense","controller"],["controller","mppt"],["controller","bridge"],["comms","controller"],["hvbus","aux"],["aux","controller"],["safety","controller"],["safety","grid-filter"]],
-  },
-  {
-    id: "servo-drive", number: "04", name: "工业伺服驱动器", subtitle: "整流母线、三相逆变、编码器反馈与安全工业网络",
-    description: "高性能多环控制架构，覆盖交流输入、制动单元、逆变功率级、位置反馈和工业实时通信。",
-    nodes: [
-      { id: "ac", title: "交流输入", functions: ["EMI", "Rectifier"], x: 25, y: 90, width: 160, height: 88, passive: true },
-      { id: "dc", title: "直流链路与制动", functions: ["Bus Sense", "Brake Chopper"], x: 235, y: 70, width: 205, height: 108, products: ["AMC1300", "UCC21750"] },
-      { id: "inverter", title: "三相功率逆变器", functions: ["6× Gate Drive", "Phase Current"], x: 505, y: 55, width: 235, height: 123, products: ["UCC21520", "UCC21750", "INA240", "TMCS1100"] },
-      { id: "motor", title: "伺服电机", functions: ["PMSM", "Brake"], x: 805, y: 82, width: 170, height: 96, passive: true },
-      { id: "encoder", title: "位置反馈", functions: ["Encoder", "Resolver"], x: 1015, y: 82, width: 150, height: 96, products: ["ISO7741", "INA240"] },
-      { id: "control", title: "多环实时控制", functions: ["Position", "Speed", "Current"], x: 450, y: 300, width: 290, height: 122, products: ["F28379D", "F280049C"] },
-      { id: "safety", title: "功能安全输入", functions: ["STO", "Fault Isolation"], x: 80, y: 300, width: 220, height: 108, products: ["ISO7762", "TPSI3050Q1"] },
-      { id: "feedback", title: "隔离模拟反馈", functions: ["Current", "DC Bus", "Temperature"], x: 850, y: 300, width: 250, height: 112, products: ["AMC1300", "INA240", "TMCS1100"] },
-      { id: "fieldbus", title: "工业现场总线", functions: ["Isolated RS-485", "CAN"], x: 85, y: 505, width: 250, height: 110, products: ["ISO1410", "ISO1042", "THVD1450"] },
-      { id: "io", title: "数字与模拟 I/O", functions: ["Digital Isolation", "Protected I/O"], x: 430, y: 505, width: 250, height: 110, products: ["ISO7741", "ISO7762"] },
-      { id: "aux", title: "控制与驱动电源", functions: ["Flyback", "Isolated DC/DC", "Buck"], x: 790, y: 495, width: 290, height: 120, products: ["UCC28740", "UCC12050", "LM5164"] },
-    ],
-    links: [["ac","dc"],["dc","inverter"],["inverter","motor"],["motor","encoder"],["encoder","control"],["control","inverter"],["safety","control"],["feedback","control"],["fieldbus","control"],["io","control"],["dc","aux"],["aux","control"]],
-  },
-  {
-    id: "energy-storage", number: "05", name: "储能双向 PCS", subtitle: "电池簇、双向 DC/DC、三相并网与站级通信",
-    description: "展示储能功率变换系统的双向能量路径，以及 BMS、主控制器、隔离采样和外部通信的协作关系。",
-    nodes: [
-      { id: "battery", title: "电池簇", functions: ["Cell Stack", "HV Contactor"], x: 25, y: 78, width: 175, height: 100, passive: true },
-      { id: "bms", title: "电池管理系统", functions: ["Cell Monitor", "Daisy Chain Bridge"], x: 35, y: 260, width: 220, height: 112, products: ["BQ79616", "BQ79600Q1", "BQ76952"] },
-      { id: "dcdc", title: "双向隔离 DC/DC", functions: ["Isolated Gate Drive", "Current Sense"], x: 270, y: 58, width: 245, height: 120, products: ["UCC21750", "UCC21520", "AMC1300", "TMCS1100"] },
-      { id: "bus", title: "高压直流母线", functions: ["Voltage Sense", "Precharge / Discharge"], x: 565, y: 78, width: 210, height: 100, products: ["AMC1300", "TPSI3050Q1"] },
-      { id: "inverter", title: "三相双向逆变器", functions: ["6× Isolated Drive", "Phase Current"], x: 825, y: 55, width: 245, height: 123, products: ["UCC21520", "UCC21750", "ISO7762", "INA240"] },
-      { id: "grid", title: "滤波器与电网", functions: ["LCL", "Grid Relay"], x: 1100, y: 78, width: 92, height: 100, passive: true },
-      { id: "control", title: "PCS 主控制器", functions: ["DC/DC Control", "Grid Control", "Protection"], x: 475, y: 310, width: 300, height: 124, products: ["F28379D", "F280049C"] },
-      { id: "measure", title: "隔离采样链", functions: ["DC Current", "Grid Voltage", "Phase Current"], x: 850, y: 300, width: 270, height: 120, products: ["AMC1300", "INA240", "TMCS1100"] },
-      { id: "comms", title: "BMS 与站控通信", functions: ["Isolated CAN", "Isolated RS-485"], x: 85, y: 500, width: 270, height: 112, products: ["ISO1042", "ISO1410", "ISO7741"] },
-      { id: "aux", title: "多路隔离辅助电源", functions: ["Flyback", "Isolated Bias", "HV Buck"], x: 465, y: 495, width: 300, height: 117, products: ["UCC28740", "UCC12050", "LM5164"] },
-      { id: "site", title: "站级 EMS / HMI", functions: ["CAN", "RS-485", "Service Port"], x: 850, y: 500, width: 270, height: 112, products: ["TCAN1042H", "THVD1450", "ISO7741"] },
-    ],
-    links: [["battery","dcdc"],["dcdc","bus"],["bus","inverter"],["inverter","grid"],["battery","bms"],["bms","control"],["control","dcdc"],["control","inverter"],["measure","control"],["comms","bms"],["comms","control"],["bus","aux"],["aux","control"],["site","control"]],
-  },
-  {
-    id: "lv-bms", number: "06", name: "48V 低压 BMS", subtitle: "多节电芯监测、保护开关、隔离通信与负载控制",
-    description: "面向 12 至 16 节串联电池组的低压电池管理架构，覆盖电芯采样、均衡、保护、主控和车身通信。",
-    nodes: [
-      { id: "cells", title: "12–16S 电芯组", functions: ["Cell Taps", "Temperature"], x: 35, y: 85, width: 190, height: 100, passive: true },
-      { id: "monitor", title: "电池监测与均衡", functions: ["Cell ADC", "Passive Balance", "Protection"], x: 285, y: 60, width: 260, height: 125, products: ["BQ76952", "BQ79616"] },
-      { id: "current", title: "电流与电量计量", functions: ["Shunt Sense", "Coulomb Count"], x: 605, y: 75, width: 225, height: 110, products: ["INA240", "TMCS1100"] },
-      { id: "switch", title: "充放电保护开关", functions: ["Charge FET", "Discharge FET"], x: 890, y: 65, width: 230, height: 120, products: ["TPSI3050Q1", "ISO7741"] },
-      { id: "load", title: "48V 系统负载", functions: ["Vehicle / Telecom"], x: 1135, y: 85, width: 55, height: 100, passive: true },
-      { id: "mcu", title: "BMS 主控制器", functions: ["State Estimation", "Diagnostics", "Data Logging"], x: 470, y: 310, width: 300, height: 125, products: ["F280039C", "F280049C"] },
-      { id: "isolation", title: "监测链路隔离", functions: ["Digital Isolator", "Isolated Power"], x: 130, y: 310, width: 250, height: 115, products: ["ISO7741", "ISO7762", "UCC12050", "BQ79600Q1"] },
-      { id: "thermal", title: "热管理与执行器", functions: ["Temperature Inputs", "Fan / Heater Drive"], x: 850, y: 310, width: 260, height: 115, products: ["INA240", "TPS54202"] },
-      { id: "comms", title: "车身 / 储能通信", functions: ["Isolated CAN", "RS-485"], x: 100, y: 510, width: 250, height: 108, products: ["ISO1042", "ISO1410", "TCAN1042H"] },
-      { id: "power", title: "48V 辅助电源树", functions: ["Wide VIN Buck", "Point-of-Load", "Isolation"], x: 455, y: 500, width: 310, height: 118, products: ["LM5164", "TPS54202", "UCC12050"] },
-      { id: "service", title: "诊断与服务接口", functions: ["UART / SPI Isolation", "Service CAN"], x: 855, y: 510, width: 255, height: 108, products: ["ISO7741", "ISO7762", "TCAN1042H"] },
-    ],
-    links: [["cells","monitor"],["monitor","current"],["current","switch"],["switch","load"],["monitor","mcu"],["current","mcu"],["mcu","switch"],["isolation","mcu"],["thermal","mcu"],["comms","mcu"],["power","mcu"],["service","mcu"]],
   },
 ];
 
-function getPath(from: DiagramNode, to: DiagramNode) {
-  const forward = to.x >= from.x;
-  const startX = forward ? from.x + from.width : from.x;
-  const endX = forward ? to.x : to.x + to.width;
-  const startY = from.y + from.height / 2;
-  const endY = to.y + to.height / 2;
-  const middleX = startX + (endX - startX) / 2;
-  return `M ${startX} ${startY} H ${middleX} V ${endY} H ${endX}`;
+function wrapLabel(label: string, limit: number) {
+  if (label.length <= limit) return [label];
+  const divider = label.includes(" ") ? label.lastIndexOf(" ", limit) : Math.ceil(label.length / 2);
+  const point = divider > 2 ? divider : Math.ceil(label.length / 2);
+  return [label.slice(0, point).trim(), label.slice(point).trim()];
 }
 
 function SystemDiagram({ diagram, selectedId, onSelect }: { diagram: Diagram; selectedId: string; onSelect: (id: string) => void }) {
-  const nodeMap = new Map(diagram.nodes.map((node) => [node.id, node]));
   return (
-    <svg id="system-diagram" className="system-svg" viewBox="0 0 1200 680" role="img" aria-label={`${diagram.name}工程系统框图`}>
+    <svg id="system-diagram" className="system-svg" viewBox="0 0 1120 950" role="img" aria-label={`${diagram.name}完整工程系统框图`}>
       <defs>
-        <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#68737d" /></marker>
-        <pattern id="dot-grid" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#e7ecee" /></pattern>
+        <pattern id="dot-grid" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".7" fill="#dce5e7" /></pattern>
+        <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#23292d" /></marker>
       </defs>
-      <rect width="1200" height="680" fill="#fbfcfc" />
-      <rect width="1200" height="680" fill="url(#dot-grid)" />
-      <g className="svg-links">
-        {diagram.links.map(([fromId, toId]) => {
-          const from = nodeMap.get(fromId); const to = nodeMap.get(toId);
-          return from && to ? <path key={`${fromId}-${toId}`} d={getPath(from, to)} markerEnd="url(#arrow)" /> : null;
-        })}
-      </g>
+      <rect width="1120" height="950" fill="#fff" />
+      <rect width="1120" height="950" fill="url(#dot-grid)" opacity=".35" />
+      <g className="svg-links">{diagram.paths.map((path, index) => <path key={index} d={path} markerEnd="url(#arrow)" />)}</g>
       <g>
         {diagram.nodes.map((node) => {
-          const active = Boolean(node.products?.length);
-          const chipGap = 7;
-          const chipAreaWidth = node.width - 22;
-          const chipWidth = (chipAreaWidth - chipGap * (node.functions.length - 1)) / node.functions.length;
-          const isSelected = node.id === selectedId;
-          const handleKey = (event: KeyboardEvent<SVGGElement>) => {
-            if (active && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); onSelect(node.id); }
+          const clickable = Boolean(node.products?.length);
+          const active = node.id === selectedId;
+          const columns = node.columns ?? 1;
+          const gap = 5;
+          const pad = 9;
+          const rows = Math.ceil(node.items.length / columns);
+          const availableHeight = node.height - 35;
+          const itemHeight = Math.max(19, (availableHeight - gap * (rows - 1)) / rows);
+          const itemWidth = (node.width - pad * 2 - gap * (columns - 1)) / columns;
+          const className = ["svg-node", clickable && "is-clickable", active && "is-selected", node.passive && "is-passive", node.load && "is-load"].filter(Boolean).join(" ");
+          const onKeyDown = (event: KeyboardEvent<SVGGElement>) => {
+            if (clickable && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); onSelect(node.id); }
           };
           return (
-            <g
-              key={node.id}
-              className={`svg-node ${active ? "is-clickable" : "is-passive"} ${isSelected ? "is-selected" : ""}`}
-              role={active ? "button" : undefined}
-              tabIndex={active ? 0 : undefined}
-              aria-label={active ? `查看${node.title}的 TI 产品` : undefined}
-              onClick={() => active && onSelect(node.id)}
-              onKeyDown={handleKey}
-            >
-              <rect className="node-shell" x={node.x} y={node.y} width={node.width} height={node.height} rx="2" />
-              <rect className="node-cap" x={node.x} y={node.y} width="5" height={node.height} />
-              {node.functions.map((label, index) => {
-                const chipX = node.x + 11 + index * (chipWidth + chipGap);
-                const fontSize = label.length > 17 ? 10 : label.length > 12 ? 11 : 12;
+            <g key={node.id} className={className} role={clickable ? "button" : undefined} tabIndex={clickable ? 0 : undefined} aria-label={clickable ? `查看${node.title}的 TI 产品` : undefined} onClick={() => clickable && onSelect(node.id)} onKeyDown={onKeyDown}>
+              <rect className="node-shell" x={node.x} y={node.y} width={node.width} height={node.height} rx="1" />
+              <rect className="node-accent" x={node.x} y={node.y} width="4" height={node.height} />
+              {node.items.map((label, index) => {
+                const col = index % columns;
+                const row = Math.floor(index / columns);
+                const x = node.x + pad + col * (itemWidth + gap);
+                const y = node.y + pad + row * (itemHeight + gap);
+                const lines = wrapLabel(label, itemWidth < 75 ? 7 : 11);
                 return (
                   <g key={label}>
-                    <rect className="function-chip" x={chipX} y={node.y + 12} width={chipWidth} height={node.height - 43} rx="1" />
-                    <text className="function-label" x={chipX + chipWidth / 2} y={node.y + 12 + (node.height - 43) / 2 + 4} textAnchor="middle" fontSize={fontSize}>{label}</text>
+                    <rect className="function-chip" x={x} y={y} width={itemWidth} height={itemHeight} rx="1" />
+                    <text className="function-label" x={x + itemWidth / 2} y={y + itemHeight / 2 - (lines.length - 1) * 6 + 4} textAnchor="middle">
+                      {lines.map((line, lineIndex) => <tspan key={lineIndex} x={x + itemWidth / 2} dy={lineIndex ? 12 : 0}>{line}</tspan>)}
+                    </text>
                   </g>
                 );
               })}
-              <text className="node-title" x={node.x + node.width / 2} y={node.y + node.height - 12} textAnchor="middle">{node.title}</text>
-              {active && <circle className="node-status" cx={node.x + node.width - 9} cy={node.y + node.height - 10} r="3" />}
+              <text className="node-title" x={node.x + node.width / 2} y={node.y + node.height - 9} textAnchor="middle">{node.title}</text>
             </g>
           );
         })}
       </g>
-      <text x="1180" y="661" textAnchor="end" className="svg-signature">SYSTEM ATLAS · ORIGINAL INTERACTIVE SVG</text>
     </svg>
   );
 }
 
 export default function Home() {
   const [diagramId, setDiagramId] = useState(diagrams[0].id);
-  const [selectedId, setSelectedId] = useState(diagrams[0].nodes.find((node) => node.products?.length)?.id ?? diagrams[0].nodes[0].id);
-  const [tab, setTab] = useState<"products" | "notes">("products");
-  const [zoom, setZoom] = useState(1);
   const diagram = useMemo(() => diagrams.find((item) => item.id === diagramId) ?? diagrams[0], [diagramId]);
-  const selected = diagram.nodes.find((node) => node.id === selectedId) ?? diagram.nodes.find((node) => node.products?.length) ?? diagram.nodes[0];
+  const [selectedByDiagram, setSelectedByDiagram] = useState<Record<string, string>>({ "air-indoor": "sensors", "coffee-machine": "power-stage" });
+  const [zoom, setZoom] = useState(1);
+  const selectedId = selectedByDiagram[diagram.id] ?? diagram.nodes.find((node) => node.products?.length)?.id ?? "";
+  const selected = diagram.nodes.find((node) => node.id === selectedId) ?? diagram.nodes[0];
   const products = (selected.products ?? []).map((id) => PRODUCTS[id]).filter(Boolean);
 
-  function chooseDiagram(next: Diagram) {
-    setDiagramId(next.id);
-    setSelectedId(next.nodes.find((node) => node.products?.length)?.id ?? next.nodes[0].id);
-    setZoom(1);
-    setTab("products");
-  }
-
+  function chooseDiagram(next: Diagram) { setDiagramId(next.id); setZoom(1); }
+  function chooseNode(id: string) { setSelectedByDiagram((current) => ({ ...current, [diagram.id]: id })); }
   function downloadSvg() {
     const source = document.getElementById("system-diagram");
     if (!source) return;
@@ -273,67 +245,49 @@ export default function Home() {
     const blob = new Blob([new XMLSerializer().serializeToString(clone)], { type: "image/svg+xml;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
-    anchor.href = url; anchor.download = `${diagram.id}-system-diagram.svg`; anchor.click();
+    anchor.href = url;
+    anchor.download = `${diagram.id}.svg`;
+    anchor.click();
     URL.revokeObjectURL(url);
   }
 
   return (
-    <main className="page-shell">
-      <header className="site-header">
-        <a className="site-brand" href="#top"><span className="brand-grid" aria-hidden="true"><i /><i /><i /><i /></span><span><strong>SYSTEM ATLAS</strong><small>INTERACTIVE ENGINEERING MAPS</small></span></a>
-        <div className="header-meta"><span>6 APPLICATIONS</span><span>SVG / REACT</span><a href="https://github.com/0731Shayne/system" target="_blank" rel="noreferrer">SOURCE ↗</a></div>
+    <main className="app-shell">
+      <header className="app-header">
+        <h1>交互式系统框图</h1>
+        <nav aria-label="选择系统">
+          {diagrams.map((item) => <button key={item.id} type="button" className={item.id === diagram.id ? "active" : ""} onClick={() => chooseDiagram(item)}>{item.name}</button>)}
+        </nav>
       </header>
 
-      <section className="intro" id="top">
-        <p>POWER ELECTRONICS · MOTOR CONTROL · BATTERY MANAGEMENT</p>
-        <div><h1>交互式工程系统框图</h1><span>点击红色功能模块，查看公开的 TI 产品映射与官方资料链接。</span></div>
-      </section>
-
-      <nav className="diagram-tabs" aria-label="选择应用系统">
-        {diagrams.map((item) => (
-          <button key={item.id} type="button" className={item.id === diagram.id ? "active" : ""} onClick={() => chooseDiagram(item)}>
-            <span>{item.number}</span><strong>{item.name}</strong><small>{item.subtitle}</small>
-          </button>
-        ))}
-      </nav>
-
-      <section className="diagram-workspace" style={{ "--zoom": zoom } as CSSProperties}>
+      <section className="workspace" style={{ "--zoom": zoom } as CSSProperties}>
         <section className="diagram-pane">
-          <div className="diagram-toolbar">
-            <div><p>APPLICATION {diagram.number}</p><h2>{diagram.name}</h2><span>{diagram.subtitle}</span></div>
-            <div className="toolbar-actions">
+          <div className="diagram-head">
+            <h2>{diagram.name}</h2>
+            <div className="diagram-actions">
               <button type="button" onClick={downloadSvg}>下载 SVG</button>
-              <div className="zoom-tools"><button type="button" aria-label="缩小" onClick={() => setZoom((z) => Math.max(.8, +(z - .1).toFixed(1)))}>−</button><output>{Math.round(zoom * 100)}%</output><button type="button" aria-label="放大" onClick={() => setZoom((z) => Math.min(1.3, +(z + .1).toFixed(1)))}>＋</button></div>
+              <button type="button" aria-label="缩小" onClick={() => setZoom((value) => Math.max(.8, +(value - .1).toFixed(1)))}>−</button>
+              <output>{Math.round(zoom * 100)}%</output>
+              <button type="button" aria-label="放大" onClick={() => setZoom((value) => Math.min(1.25, +(value + .1).toFixed(1)))}>＋</button>
             </div>
           </div>
-          <div className="diagram-summary"><span className="red-key" />红色：可点击产品功能模块 <span className="gray-key" />灰色：系统结构或外部器件</div>
-          <div className="svg-scroller"><div className="svg-scale"><SystemDiagram diagram={diagram} selectedId={selected.id} onSelect={(id) => { setSelectedId(id); setTab("products"); }} /></div></div>
-          <div className="diagram-footer"><span>{diagram.description}</span><strong>{diagram.nodes.filter((node) => node.products?.length).length} 个产品映射区域</strong></div>
+          <div className="svg-scroller"><div className="svg-scale"><SystemDiagram diagram={diagram} selectedId={selectedId} onSelect={chooseNode} /></div></div>
         </section>
 
-        <aside className="resource-pane" aria-live="polite">
-          <div className="resource-head"><p>SELECTED FUNCTION</p><h2>{selected.title}</h2><span>{selected.functions.join(" · ")}</span></div>
-          <div className="resource-tabs"><button type="button" className={tab === "products" ? "active" : ""} onClick={() => setTab("products")}>产品 <em>{products.length}</em></button><button type="button" className={tab === "notes" ? "active" : ""} onClick={() => setTab("notes")}>设计说明</button></div>
-          {tab === "products" ? (
-            <div className="product-results">
-              <div className="result-label"><span>TI 官方公开产品</span><small>按功能匹配</small></div>
-              {products.map((item) => (
-                <article className="ti-product" key={item.id}>
-                  <div><span>{item.category}</span><a href={item.url} target="_blank" rel="noreferrer" aria-label={`在 TI 官网查看 ${item.name}`}>TI.COM ↗</a></div>
-                  <h3><a href={item.url} target="_blank" rel="noreferrer">{item.name}</a></h3>
-                  <p>{item.description}</p>
-                  <footer><span>数据来源：TI 官方产品页</span><a href={item.url} target="_blank" rel="noreferrer">查看产品资料</a></footer>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <div className="design-notes"><h3>模块职责</h3><p>{diagram.description}</p><h3>功能组成</h3><ul>{selected.functions.map((item) => <li key={item}>{item}</li>)}</ul><h3>交互规则</h3><p>红色模块关联公开产品；灰色模块仅用于表达能量流、控制流和系统边界。</p></div>
-          )}
-          <div className="legal-note"><strong>非官方演示</strong><p>本页面为个人前端与信息架构作品，不隶属于 Texas Instruments。TI、C2000 及相关产品名称归其权利人所有；产品信息以链接所指向的 TI 官方页面为准。</p></div>
+        <aside className="product-pane" aria-live="polite">
+          <header><h2>{selected.title}</h2><span>{products.length} 个推荐产品</span></header>
+          <div className="product-list">
+            {products.map((item) => (
+              <article key={item.id}>
+                <div><span>{item.category}</span><a href={`https://www.ti.com.cn/product/cn/${item.id}`} target="_blank" rel="noreferrer">TI 官网 ↗</a></div>
+                <h3>{item.id}</h3>
+                <p>{item.description}</p>
+              </article>
+            ))}
+          </div>
+          <a className="source-link" href={diagram.source} target="_blank" rel="noreferrer">查看 TI 原始应用页面 ↗</a>
         </aside>
       </section>
-
-      <footer className="site-footer"><div><strong>SYSTEM ATLAS</strong><span>原创 SVG 构图与交互实现</span></div><p>页面未复制 TI 官方框图或页面代码，仅使用公开产品名称与官方链接进行功能映射演示。</p><span>© 2026 SHAYNE</span></footer>
     </main>
   );
 }
