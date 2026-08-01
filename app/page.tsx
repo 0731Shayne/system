@@ -207,11 +207,13 @@ function wireStyle(wire: Wire): CSSProperties {
   const [x2, y2] = wire.to;
   const dx = x2 - x1;
   const dy = y2 - y1;
+  const length = Math.sqrt(dx * dx + dy * dy).toFixed(3);
+  const angle = (Math.atan2(dy, dx) * (180 / Math.PI)).toFixed(3);
   return {
     left: `${x1}%`,
     top: `${y1}%`,
-    width: `${Math.sqrt(dx * dx + dy * dy)}%`,
-    transform: `rotate(${Math.atan2(dy, dx) * (180 / Math.PI)}deg)`,
+    width: `${length}%`,
+    transform: `rotate(${angle}deg)`,
   };
 }
 
