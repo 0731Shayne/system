@@ -5,18 +5,23 @@ import test from "node:test";
 const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
 const readme = await readFile(new URL("../README.md", import.meta.url), "utf8");
 
-test("ships six original scenarios", () => {
-  for (const scenario of ["智能气候环", "光储微电网", "协作机器人单元", "轻型电驱平台", "数据中心电源架", "智慧充电枢纽"]) {
+test("ships six detailed engineering architectures", () => {
+  for (const scenario of ["家用变频空调", "商用多联机空调", "三相组串逆变器", "工业伺服驱动器", "储能双向 PCS", "48V 低压 BMS"]) {
     assert.match(page, new RegExp(scenario));
   }
 });
 
-test("marks every component as fictional demo content", () => {
-  assert.match(page, /所有型号与参数均为界面演示用途/);
-  assert.match(page, /DEMO-GATE-06/);
-  assert.match(readme, /fictional/);
+test("renders interactive SVG and official product links", () => {
+  assert.match(page, /id="system-diagram"/);
+  assert.match(page, /downloadSvg/);
+  assert.match(page, /https:\/\/www\.ti\.com\/product\//);
+  assert.match(page, /UCC21520/);
+  assert.match(page, /BQ76952/);
+  assert.match(readme, /TI 官方产品页/);
 });
 
-test("contains no excluded brand or part-number references", () => {
-  assert.doesNotMatch(page, /Southchip|南芯|Texas Instruments|SC\d{3,}/i);
+test("states ownership clearly and excludes Southchip material", () => {
+  assert.match(page, /不隶属于 Texas Instruments/);
+  assert.match(page, /未复制 TI 官方框图或页面代码/);
+  assert.doesNotMatch(page, /Southchip|南芯|SC\d{3,}/i);
 });

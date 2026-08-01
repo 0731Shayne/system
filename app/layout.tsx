@@ -1,17 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
-
 export const metadata: Metadata = {
-  title: "FluxCanvas — 交互式系统架构作品集",
-  description: "原创交互式系统框图：探索六类复杂系统、功能模块与概念产品映射。",
-  icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
+  title: "SYSTEM ATLAS — 交互式工程系统框图",
+  description: "六套原创 SVG 工程系统框图，点击功能模块即可查看对应的 TI 公开产品与官方资料。",
+  icons: { icon: "./favicon.svg", shortcut: "./favicon.svg" },
   openGraph: {
-    title: "FluxCanvas — 复杂系统，一眼看懂",
-    description: "一套从零设计的交互式系统架构浏览器。",
+    title: "SYSTEM ATLAS — 交互式工程系统框图",
+    description: "原创 SVG 系统架构、可点击产品映射与 TI 官方资料入口。",
     type: "website",
   },
 };
@@ -19,7 +15,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="zh-CN">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>{children}</body>
+      <body>{children}</body>
     </html>
   );
 }

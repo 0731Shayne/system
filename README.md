@@ -1,41 +1,40 @@
-# FluxCanvas
+# SYSTEM ATLAS
 
-An original interactive system architecture portfolio built with React, TypeScript and Next.js-compatible Vinext.
+一套原创的交互式工程系统框图作品集。页面用 React 生成可缩放的 SVG 架构图，点击红色功能模块后，会在右侧列出匹配的 TI 公开产品，并跳转到对应的 TI 官方产品页。
 
-## What it demonstrates
+## 页面内容
 
-- Six original system concepts rendered with HTML and CSS
-- Clickable functional modules with contextual component cards
-- Scenario switching, diagram zoom and responsive layouts
-- Keyboard-accessible controls and reduced-motion support
-- No third-party diagrams, logos, product numbers or proprietary material
+- 家用变频空调
+- 商用多联机空调
+- 三相组串逆变器
+- 工业伺服驱动器
+- 储能双向 PCS
+- 48V 低压 BMS
 
-All system names, topologies, copy and `DEMO-*` component names are fictional and were created specifically for this portfolio. They do not represent real products or vendor recommendations.
+每套框图均包含能量流、控制流、传感、隔离通信和辅助电源等工程模块。框图可缩放、键盘操作，并可将当前架构直接下载为 SVG。
 
-## Local preview
+## 本地运行
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Validation
+## 检查与构建
 
 ```bash
-npm run build
 npm test
+npm run build:pages
 ```
 
-## Project structure
+`build:pages` 会生成适用于 GitHub Pages 的静态文件到 `out/`。仓库中的 GitHub Actions 工作流会在 `main` 分支更新时自动发布。
 
-- `app/page.tsx` — application data, diagram renderer and interactions
-- `app/globals.css` — visual system and responsive layouts
-- `app/layout.tsx` — metadata and page language
+## 数据与替换方式
 
-## Replacing the concept products
+产品数据与六套架构定义集中在 `app/page.tsx`。如需接入自己的产品表，可以替换 `PRODUCTS` 与各节点的 `products` 数组，页面交互和 SVG 构图逻辑无需改动。
 
-Concept component cards are stored in the `diagrams` data inside `app/page.tsx`. Replace each node's `products` array with data from your own approved API or product database. Keep the `DEMO-*` convention until real content has been reviewed for publication.
+## 权利与来源说明
 
-## Rights statement
+本项目为个人前端与信息架构作品，不是 Texas Instruments 官方页面，也不构成选型建议。产品名称、简要用途及链接来自 TI 官方产品页，TI、C2000 及相关产品名称归其权利人所有。
 
-The front-end implementation and portfolio content in this repository are original demonstration work. Third-party marks and copyrighted diagrams are intentionally excluded.
+框图的拓扑、排版、视觉样式和前端代码均为本项目重新设计，未复制 TI 官方框图、网页源代码或第三方品牌素材。

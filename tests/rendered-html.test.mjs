@@ -17,8 +17,10 @@ test("server-renders the finished portfolio", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   const html = await response.text();
-  assert.match(html, /FluxCanvas/);
-  assert.match(html, /复杂系统/);
-  assert.match(html, /原创交互式系统架构作品集/);
+  assert.match(html, /SYSTEM ATLAS/);
+  assert.match(html, /交互式工程系统框图/);
+  assert.match(html, /家用变频空调/);
+  assert.match(html, /TI 官方公开产品/);
+  assert.match(html, /非官方演示/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|Southchip|南芯/i);
 });
