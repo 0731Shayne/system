@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --red: #d32922;
-  --teal: #087f8c;
-  --teal-dark: #056b76;
-  --ice: #dff2f4;
-  --ink: #23292d;
+  --red: #d71913;
+  --teal: #008a99;
+  --teal-dark: #007481;
+  --ice: #d9f1f4;
+  --ink: #202529;
   --muted: #6f777c;
   --line: #d9dddf;
   --font-sans: Inter, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -24,6 +24,7 @@ button { cursor: pointer; }
 .app-header nav button { min-width: 150px; padding: 0 25px; border: 0; border-left: 1px solid var(--line); background: #fff; color: #60686d; font-size: 14px; position: relative; }
 .app-header nav button:last-child { border-right: 1px solid var(--line); }
 .app-header nav button:hover { background: #f7f9f9; }
+.app-header nav button:focus-visible { outline: 2px solid var(--teal); outline-offset: -3px; }
 .app-header nav button.active { color: var(--red); font-weight: 700; }
 .app-header nav button.active::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: var(--red); }
 
@@ -38,27 +39,27 @@ button { cursor: pointer; }
 .diagram-actions button:hover { background: #eef5f5; }
 .diagram-actions output { min-width: 52px; color: #6f777c; font-size: 10px; }
 
-.svg-scroller { flex: 1; min-height: 0; overflow: auto; padding: 16px; background: #fff; }
+.svg-scroller { flex: 1; min-height: 0; overflow: auto; padding: 18px 20px 28px; background: #fff; }
 .svg-scale { width: max(100%, 900px); transform: scale(var(--zoom)); transform-origin: top center; transition: transform .16s ease; }
 .system-svg { display: block; width: 100%; min-width: 900px; height: auto; }
-.svg-links path { fill: none; stroke: #23292d; stroke-width: 1.25; }
+.svg-links path { fill: none; stroke: #1f2528; stroke-width: 1.35; stroke-linecap: square; stroke-linejoin: miter; }
 .svg-node { outline: none; }
-.node-shell { fill: var(--ice); stroke: #91c2c8; stroke-width: 1; transition: stroke .12s, stroke-width .12s; }
-.node-accent { fill: var(--teal); }
-.function-chip { fill: var(--teal); stroke: #fff; stroke-width: .7; }
-.function-label { fill: #fff; font: 700 10.5px/1 Arial, sans-serif; pointer-events: none; }
-.node-title { fill: #263238; font: 600 10.5px/1 Arial, sans-serif; pointer-events: none; }
+.node-shell { fill: var(--ice); stroke: #9bcdd2; stroke-width: 1; transition: stroke .12s, stroke-width .12s; }
+.function-chip { fill: var(--teal); stroke: #fff; stroke-width: .8; }
+.function-label { fill: #fff; font: 700 10.2px/1 Arial, Helvetica, sans-serif; pointer-events: none; }
+.function-label.compact { font-size: 9.2px; }
+.node-title { fill: #202529; font: 500 10.5px/1 Arial, Helvetica, sans-serif; pointer-events: none; }
+.selection-outline { fill: none; stroke: var(--red); stroke-width: 3.2; pointer-events: none; }
 .is-clickable { cursor: pointer; }
-.is-clickable:hover .node-shell, .is-clickable:focus .node-shell { stroke: var(--red); stroke-width: 2.2; }
+.is-clickable:hover .node-shell, .is-clickable:focus .node-shell { stroke: #e12b25; stroke-width: 2; }
 .is-clickable:hover .function-chip { fill: var(--teal-dark); }
-.is-selected .node-shell { stroke: var(--red); stroke-width: 3; }
-.is-selected .node-accent { fill: var(--red); }
 .is-passive .node-shell { fill: #f4f5f5; stroke: #a9afb2; }
-.is-passive .node-accent { fill: #858d91; }
 .is-passive .function-chip { fill: #fff; stroke: #7f878b; }
-.is-passive .function-label { fill: #252a2d; font-weight: 600; }
-.is-load .function-chip { fill: #fff; stroke: #9aa0a3; }
-.is-load .function-label { fill: #1f2528; font-weight: 700; }
+.is-passive .function-label { fill: #252a2d; font-weight: 500; }
+.load-item circle { fill: #fff; stroke: #7f878b; stroke-width: 1.25; }
+.load-symbol { fill: #111; font: 700 15px/1 Arial, Helvetica, sans-serif; }
+.load-label { fill: #202529; font: 500 9.5px/1 Arial, Helvetica, sans-serif; }
+.load-title { fill: #72797d; font-size: 9.5px; }
 
 .product-pane { min-width: 0; display: flex; flex-direction: column; background: #fff; }
 .product-pane > header { min-height: 112px; padding: 28px 28px 22px; border-bottom: 1px solid var(--line); }

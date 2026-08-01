@@ -20,6 +20,7 @@ test("server-renders the finished portfolio", async () => {
   assert.match(html, /交互式系统框图/);
   assert.match(html, /空调室内机/);
   assert.match(html, /咖啡机/);
-  assert.match(html, /环境与人体传感/);
+  assert.match(html, /Sensors/);
+  assert.match(html, /Analog front-end/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|Southchip|南芯|SYSTEM ATLAS/i);
 });

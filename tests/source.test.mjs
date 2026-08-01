@@ -6,9 +6,16 @@ const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8")
 const readme = await readFile(new URL("../README.md", import.meta.url), "utf8");
 
 test("ships two complete engineering architectures", () => {
-  for (const scenario of ["空调室内机", "咖啡机", "环境与人体传感", "电机与负载功率级", "电流与电压检测"]) {
+  for (const scenario of ["空调室内机", "咖啡机", "Sensors", "Power stage", "Current & voltage sense"]) {
     assert.match(page, new RegExp(scenario));
   }
+});
+
+test("uses English labels throughout both engineering diagrams", () => {
+  for (const label of ["Input power protection", "Analog front-end", "Digital processing", "Wired interface", "Wireless interface", "Input user interface", "Output user interface", "Motor drive"]) {
+    assert.match(page, new RegExp(label));
+  }
+  assert.doesNotMatch(page, /title: "(?:交流输入|输入电源保护|数字处理|过程传感器|系统监测)"/);
 });
 
 test("renders interactive SVG and official product links", () => {

@@ -96,44 +96,44 @@ const PRODUCTS: Record<string, Product> = {
 };
 
 const AIR_NODES: DiagramNode[] = [
-  { id: "ac", title: "交流输入", items: ["AC 220V"], x: 18, y: 34, width: 86, height: 66, passive: true },
-  { id: "input-protection", title: "输入电源保护", items: ["保险丝", "浪涌吸收", "浪涌电流限制", "EMI 滤波"], x: 132, y: 22, width: 190, height: 116, columns: 2, passive: true },
-  { id: "acdc", title: "交流/直流电源", items: ["整流桥", "PWM 控制", "隔离反激", "电压反馈"], x: 365, y: 22, width: 190, height: 116, columns: 2, products: ["LM5021", "UCC28881", "UCC28910"] },
-  { id: "gating", title: "电源保护与门控", items: ["电子保险丝", "负载开关"], x: 600, y: 30, width: 148, height: 100, products: ["TPS1641", "TPS2595"] },
-  { id: "rails", title: "低压电源树", items: ["DC/DC", "多通道 PMIC", "LDO"], x: 792, y: 22, width: 160, height: 116, products: ["TPS542021", "TPS65023B", "TLV709"] },
-  { id: "sensors", title: "环境与人体传感", items: ["温度", "湿度", "空气质量", "环境光", "接近", "人体存在", "3D ToF", "红外"], x: 25, y: 210, width: 178, height: 254, products: ["LMP93601", "OPT3004", "IWRL6432AOP", "HDC3021", "TMP103", "OPT3101"] },
-  { id: "afe", title: "模拟前端", items: ["MUX", "AMP", "ADC", "REF"], x: 258, y: 257, width: 166, height: 126, columns: 2, products: ["LMP93601", "TMUX4051", "OPA2320", "REF1933"] },
-  { id: "mcu", title: "数字处理", items: ["主控 MCU", "存储器", "实时控制"], x: 480, y: 246, width: 166, height: 140, products: ["MSPM0G1506", "TMS320F2800132"] },
-  { id: "display", title: "显示与声音输出", items: ["LCD / LED", "背光驱动", "电平转换", "音频输出"], x: 713, y: 202, width: 214, height: 158, columns: 2, products: ["TPS61165", "LP5018", "TPS65105"] },
-  { id: "loads", title: "输出负载", items: ["显示屏", "扬声器", "蜂鸣器", "辅助加热"], x: 966, y: 202, width: 118, height: 158, passive: true, load: true },
-  { id: "monitor", title: "系统监测", items: ["看门狗", "温度保护", "复位", "电压监控"], x: 480, y: 438, width: 166, height: 136, products: ["TLV803E", "TPS3700"] },
-  { id: "wired", title: "有线通信", items: ["RS-485", "CAN", "UART", "HomeBus", "隔离", "接口保护"], x: 25, y: 516, width: 202, height: 194, columns: 2, products: ["SN65HVD3082E", "TPD2E001", "TCA9535"] },
-  { id: "wireless", title: "无线通信", items: ["Wi-Fi 6", "Bluetooth LE", "2.4GHz RF"], x: 274, y: 578, width: 168, height: 124, products: ["CC3351MOD", "CC2340R2"] },
-  { id: "input-ui", title: "用户输入", items: ["手势识别", "触摸按键", "旋钮", "电容/电感感应"], x: 480, y: 624, width: 196, height: 136, columns: 2, products: ["MSP430FR2633", "LDC1614", "DRV2605L"] },
-  { id: "power-stage", title: "继电器与功率级", items: ["继电器驱动", "Triac", "栅极驱动", "MOSFET / IGBT"], x: 724, y: 414, width: 198, height: 162, columns: 2, products: ["DRV8421", "DRV110", "TPL7407L", "UCC27624"] },
-  { id: "motor-drive", title: "风机与风门驱动", items: ["步进驱动", "BDC 驱动", "BLDC 驱动", "霍尔反馈"], x: 724, y: 620, width: 198, height: 140, columns: 2, products: ["DRV8421", "INA240", "DRV5013"] },
-  { id: "actuators", title: "执行器", items: ["横向摆叶 M", "纵向摆叶 M", "贯流风机 M", "无刷风机 M"], x: 966, y: 596, width: 118, height: 164, passive: true, load: true },
-  { id: "sense", title: "电流与电压检测", items: ["电流采样", "电压采样", "比较器", "基准"], x: 724, y: 790, width: 198, height: 132, columns: 2, products: ["INA2180", "LM2903B", "OPA320"] },
+  { id: "ac", title: "AC input", items: ["220 VAC"], x: 18, y: 34, width: 86, height: 66, passive: true },
+  { id: "input-protection", title: "Input power protection", items: ["Fuse", "Varistor", "Inrush current protection", "EMI protection"], x: 132, y: 22, width: 190, height: 116, columns: 2, passive: true },
+  { id: "acdc", title: "AC/DC power supply", items: ["Diode bridge rectifier", "PWM controller", "Isolated flyback", "Voltage feedback"], x: 365, y: 22, width: 190, height: 116, columns: 2, products: ["LM5021", "UCC28881", "UCC28910"] },
+  { id: "gating", title: "Power protection & gating", items: ["E-fuse & protection", "Load switch"], x: 600, y: 30, width: 148, height: 100, products: ["TPS1641", "TPS2595"] },
+  { id: "rails", title: "Non-isolated DC/DC power supply", items: ["DC/DC", "Multi-channel PMIC", "LDO"], x: 792, y: 22, width: 160, height: 116, products: ["TPS542021", "TPS65023B", "TLV709"] },
+  { id: "sensors", title: "Sensors", items: ["Temperature sensors", "Humidity sensors", "Air quality sensors", "Ambient light sensors", "Proximity sensors", "Human activity sensors", "3D ToF", "Infrared sensors"], x: 25, y: 210, width: 178, height: 254, products: ["LMP93601", "OPT3004", "IWRL6432AOP", "HDC3021", "TMP103", "OPT3101"] },
+  { id: "afe", title: "Analog front-end", items: ["MUX", "AMP", "ADC", "REF"], x: 258, y: 257, width: 166, height: 126, columns: 2, products: ["LMP93601", "TMUX4051", "OPA2320", "REF1933"] },
+  { id: "mcu", title: "Digital processing", items: ["MCU", "Memory", "Real-time control"], x: 480, y: 246, width: 166, height: 140, products: ["MSPM0G1506", "TMS320F2800132"] },
+  { id: "display", title: "Output user interface", items: ["LED / TFT LCD display", "Backlight LED driver", "Level shifter", "Audio output"], x: 713, y: 202, width: 214, height: 158, columns: 2, products: ["TPS61165", "LP5018", "TPS65105"] },
+  { id: "loads", title: "Output loads", items: ["Display", "Speaker", "Buzzer", "Auxiliary heater"], x: 950, y: 202, width: 150, height: 158, passive: true, load: true },
+  { id: "monitor", title: "Monitoring", items: ["Watchdog", "Temperature", "Reset", "Voltage supervisor"], x: 480, y: 438, width: 166, height: 136, products: ["TLV803E", "TPS3700"] },
+  { id: "wired", title: "Wired interface", items: ["RS-485", "CAN", "UART", "HomeBus", "Isolation", "Protection"], x: 25, y: 516, width: 202, height: 194, columns: 2, products: ["SN65HVD3082E", "TPD2E001", "TCA9535"] },
+  { id: "wireless", title: "Wireless interface", items: ["Wi-Fi 6", "Bluetooth LE", "2.4GHz RF"], x: 274, y: 578, width: 168, height: 124, products: ["CC3351MOD", "CC2340R2"] },
+  { id: "input-ui", title: "Input user interface", items: ["Gesture recognition", "Touch keys", "Dial", "Inductive / capacitive sensing"], x: 480, y: 624, width: 196, height: 136, columns: 2, products: ["MSP430FR2633", "LDC1614", "DRV2605L"] },
+  { id: "power-stage", title: "Power stage", items: ["Relay driver", "Triacs", "Gate driver", "MOSFETs / IGBTs"], x: 724, y: 414, width: 198, height: 162, columns: 2, products: ["DRV8421", "DRV110", "TPL7407L", "UCC27624"] },
+  { id: "motor-drive", title: "Motor drive", items: ["Step motor driver", "BDC motor driver", "BLDC motor driver", "Hall sensor"], x: 724, y: 620, width: 198, height: 140, columns: 2, products: ["DRV8421", "INA240", "DRV5013"] },
+  { id: "actuators", title: "Actuators", items: ["Horizontal louver motor", "Vertical louver motor", "Cross-flow fan motor", "BLDC fan motor"], x: 950, y: 596, width: 150, height: 164, passive: true, load: true },
+  { id: "sense", title: "Current & voltage sense", items: ["Current sense", "Voltage sense", "Comparator", "Reference"], x: 724, y: 790, width: 198, height: 132, columns: 2, products: ["INA2180", "LM2903B", "OPA320"] },
 ];
 
 const COFFEE_NODES: DiagramNode[] = [
-  { id: "ac", title: "交流输入", items: ["AC 220V"], x: 18, y: 34, width: 86, height: 66, passive: true },
-  { id: "input-protection", title: "输入电源保护", items: ["保险丝", "压敏电阻", "浪涌限制", "EMI 滤波"], x: 132, y: 22, width: 190, height: 116, columns: 2, passive: true },
-  { id: "acdc", title: "辅助电源", items: ["整流桥", "PWM 控制", "隔离反激", "同步整流"], x: 365, y: 22, width: 190, height: 116, columns: 2, products: ["UCC28881", "UCC28910", "LM5021"] },
-  { id: "gating", title: "电源保护与门控", items: ["电子保险丝", "负载开关"], x: 600, y: 30, width: 148, height: 100, products: ["TPS2595", "TPS1641"] },
-  { id: "rails", title: "低压电源树", items: ["DC/DC", "LDO", "模拟电源"], x: 792, y: 22, width: 160, height: 116, products: ["TPS542021", "TPS65023B", "TLV709"] },
-  { id: "sensors", title: "过程传感器", items: ["水位", "温度", "杯体接近", "上盖状态", "流量", "压力"], x: 25, y: 214, width: 178, height: 198, columns: 2, products: ["DRV5013", "OPT3101", "FDC1004"] },
-  { id: "afe", title: "模拟前端", items: ["MUX", "AMP", "ADC", "比较器"], x: 258, y: 246, width: 166, height: 126, columns: 2, products: ["INA180", "OPA2376", "REF1930"] },
-  { id: "mcu", title: "数字处理", items: ["主控 MCU", "时序控制", "故障管理"], x: 480, y: 236, width: 166, height: 140, products: ["MSPM0G1519", "MSPM0C1104"] },
-  { id: "power-stage", title: "电机与负载功率级", items: ["泵电机驱动", "奶泡电机驱动", "磨豆电机驱动", "阀组驱动", "加热器驱动", "继电器驱动"], x: 735, y: 196, width: 220, height: 236, columns: 2, products: ["DRV8304", "DRV8215", "DRV8234", "DRV110", "DRV8424", "UCC27735"] },
-  { id: "loads", title: "执行负载", items: ["水泵 M", "奶泡器 M", "磨豆机 M", "电磁阀", "加热盘", "蜂鸣器"], x: 990, y: 196, width: 110, height: 236, passive: true, load: true },
-  { id: "monitor", title: "系统监测", items: ["看门狗", "欠压复位", "过温保护"], x: 480, y: 430, width: 166, height: 124, products: ["TLV803", "TPS3700"] },
-  { id: "wired", title: "有线接口", items: ["UART", "I²C", "SPI", "接口保护"], x: 25, y: 470, width: 178, height: 146, columns: 2, products: ["TCA9535", "MAX3232E", "TPD2E001"] },
-  { id: "wireless", title: "无线连接", items: ["Wi-Fi", "Bluetooth LE"], x: 25, y: 662, width: 178, height: 104, products: ["CC3200MOD", "CC2340R2"] },
-  { id: "input-ui", title: "用户输入", items: ["电容触摸", "旋钮", "按键", "触觉反馈"], x: 258, y: 470, width: 184, height: 146, columns: 2, products: ["MSP430FR2633", "FDC2214", "DRV2605L"] },
-  { id: "output-ui", title: "显示与声音输出", items: ["LCD / LED", "背光驱动", "RGB 指示", "音频输出"], x: 258, y: 662, width: 184, height: 132, columns: 2, products: ["TPS61165", "LP5018", "TPS65105"] },
-  { id: "position", title: "位置与转速反馈", items: ["磁性检测", "霍尔开关", "堵转检测"], x: 735, y: 488, width: 220, height: 124, products: ["DRV5013", "DRV5023", "DRV8215"] },
-  { id: "sense", title: "电流与电压检测", items: ["电流采样", "电压采样", "比较器", "电压基准"], x: 735, y: 666, width: 220, height: 132, columns: 2, products: ["INA181", "LM393A", "REF1925"] },
+  { id: "ac", title: "AC input", items: ["220 VAC"], x: 18, y: 34, width: 86, height: 66, passive: true },
+  { id: "input-protection", title: "Input power protection", items: ["Fuse", "Varistor", "Inrush current protection", "EMI protection"], x: 132, y: 22, width: 190, height: 116, columns: 2, passive: true },
+  { id: "acdc", title: "Isolated AC/DC power supply", items: ["Diode bridge rectifier", "PWM controller", "Isolated flyback", "Synchronous rectifier"], x: 365, y: 22, width: 190, height: 116, columns: 2, products: ["UCC28881", "UCC28910", "LM5021"] },
+  { id: "gating", title: "Power protection & gating", items: ["E-fuse & protection", "Load switch"], x: 600, y: 30, width: 148, height: 100, products: ["TPS2595", "TPS1641"] },
+  { id: "rails", title: "Non-isolated DC/DC power supply", items: ["DC/DC", "LDO", "Analog supply"], x: 792, y: 22, width: 160, height: 116, products: ["TPS542021", "TPS65023B", "TLV709"] },
+  { id: "sensors", title: "Sensors", items: ["Water level", "Temperature", "Cup proximity", "Lid position", "Flow", "Pressure"], x: 25, y: 214, width: 178, height: 198, columns: 2, products: ["DRV5013", "OPT3101", "FDC1004"] },
+  { id: "afe", title: "Analog front-end", items: ["MUX", "AMP", "ADC", "Comparator"], x: 258, y: 246, width: 166, height: 126, columns: 2, products: ["INA180", "OPA2376", "REF1930"] },
+  { id: "mcu", title: "Digital processing", items: ["MCU / MPU", "Sequence control", "Fault management"], x: 480, y: 236, width: 166, height: 140, products: ["MSPM0G1519", "MSPM0C1104"] },
+  { id: "power-stage", title: "Power stage", items: ["Pump motor driver", "Milk frother motor driver", "Grinder motor driver", "Valve driver", "Heater driver", "Relay driver"], x: 735, y: 196, width: 220, height: 236, columns: 2, products: ["DRV8304", "DRV8215", "DRV8234", "DRV110", "DRV8424", "UCC27735"] },
+  { id: "loads", title: "Loads", items: ["Pump motor", "Milk frother motor", "Grinder motor", "Solenoid valves", "Water heater", "Buzzer"], x: 970, y: 196, width: 140, height: 236, passive: true, load: true },
+  { id: "monitor", title: "Monitoring", items: ["Watchdog", "Undervoltage reset", "Overtemperature protection"], x: 480, y: 430, width: 166, height: 124, products: ["TLV803", "TPS3700"] },
+  { id: "wired", title: "Wired interface", items: ["UART", "I²C", "SPI", "Protection"], x: 25, y: 470, width: 178, height: 146, columns: 2, products: ["TCA9535", "MAX3232E", "TPD2E001"] },
+  { id: "wireless", title: "Wireless interface", items: ["Wi-Fi", "Bluetooth LE"], x: 25, y: 662, width: 178, height: 104, products: ["CC3200MOD", "CC2340R2"] },
+  { id: "input-ui", title: "Input user interface", items: ["Capacitive touch", "Speed knob", "Touch keys", "Haptics driver"], x: 258, y: 470, width: 184, height: 146, columns: 2, products: ["MSP430FR2633", "FDC2214", "DRV2605L"] },
+  { id: "output-ui", title: "Output user interface", items: ["LED / TFT LCD display", "Backlight LED driver", "RGB indicator", "Audio output"], x: 258, y: 662, width: 184, height: 132, columns: 2, products: ["TPS61165", "LP5018", "TPS65105"] },
+  { id: "position", title: "Position sensor", items: ["Magnetic sensing", "Hall sensor", "Stall detection"], x: 735, y: 488, width: 220, height: 124, products: ["DRV5013", "DRV5023", "DRV8215"] },
+  { id: "sense", title: "Current & voltage sense", items: ["Current sense", "Voltage sense", "Comparator", "Voltage reference"], x: 735, y: 666, width: 220, height: 132, columns: 2, products: ["INA181", "LM393A", "REF1925"] },
 ];
 
 const diagrams: Diagram[] = [
@@ -144,10 +144,10 @@ const diagrams: Diagram[] = [
     nodes: AIR_NODES,
     paths: [
       "M104 67H132", "M322 67H365", "M555 67H600", "M748 67H792",
-      "M203 335H258", "M424 320H480", "M646 310H713", "M927 280H966",
+      "M203 335H258", "M424 320H480", "M646 310H713", "M927 280H950",
       "M563 386V438", "M563 438V400H820V414", "M646 316H680V495H724",
       "M227 613H250V316H258", "M442 640H460V316H480", "M676 692H695V535H724",
-      "M922 495H966", "M922 690H966", "M823 620V576", "M823 790V760",
+      "M922 495H950", "M922 690H950", "M823 620V576", "M823 790V760",
       "M875 138V175H563V246", "M845 138V184H820V202", "M872 360V414",
     ],
   },
@@ -158,7 +158,7 @@ const diagrams: Diagram[] = [
     nodes: COFFEE_NODES,
     paths: [
       "M104 67H132", "M322 67H365", "M555 67H600", "M748 67H792",
-      "M203 313H258", "M424 309H480", "M646 306H735", "M955 314H990",
+      "M203 313H258", "M424 309H480", "M646 306H735", "M955 314H970",
       "M563 376V430", "M646 306H690V314H735", "M203 543H235V309H258",
       "M203 714H224V543H258", "M442 543H462V306H480", "M442 728H462V306H480",
       "M646 306H690V550H735", "M845 488V432", "M845 666V612", "M872 138V168H563V236",
@@ -168,20 +168,37 @@ const diagrams: Diagram[] = [
 
 function wrapLabel(label: string, limit: number) {
   if (label.length <= limit) return [label];
-  const divider = label.includes(" ") ? label.lastIndexOf(" ", limit) : Math.ceil(label.length / 2);
-  const point = divider > 2 ? divider : Math.ceil(label.length / 2);
-  return [label.slice(0, point).trim(), label.slice(point).trim()];
+  const words = label.split(/\s+/);
+  if (words.length === 1) {
+    const midpoint = Math.ceil(label.length / 2);
+    return [label.slice(0, midpoint), label.slice(midpoint)];
+  }
+  const lines: string[] = [];
+  for (const word of words) {
+    const current = lines.at(-1);
+    if (!current || `${current} ${word}`.length > limit) lines.push(word);
+    else lines[lines.length - 1] = `${current} ${word}`;
+  }
+  if (lines.length <= 3) return lines;
+  return [lines[0], lines[1], lines.slice(2).join(" ")];
+}
+
+function loadSymbol(label: string) {
+  if (/motor|fan/i.test(label)) return "M";
+  if (/heater/i.test(label)) return "H";
+  if (/speaker/i.test(label)) return "S";
+  if (/buzzer/i.test(label)) return "B";
+  if (/display/i.test(label)) return "D";
+  return "V";
 }
 
 function SystemDiagram({ diagram, selectedId, onSelect }: { diagram: Diagram; selectedId: string; onSelect: (id: string) => void }) {
   return (
     <svg id="system-diagram" className="system-svg" viewBox="0 0 1120 950" role="img" aria-label={`${diagram.name}完整工程系统框图`}>
       <defs>
-        <pattern id="dot-grid" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".7" fill="#dce5e7" /></pattern>
         <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#23292d" /></marker>
       </defs>
       <rect width="1120" height="950" fill="#fff" />
-      <rect width="1120" height="950" fill="url(#dot-grid)" opacity=".35" />
       <g className="svg-links">{diagram.paths.map((path, index) => <path key={index} d={path} markerEnd="url(#arrow)" />)}</g>
       <g>
         {diagram.nodes.map((node) => {
@@ -191,33 +208,57 @@ function SystemDiagram({ diagram, selectedId, onSelect }: { diagram: Diagram; se
           const gap = 5;
           const pad = 9;
           const rows = Math.ceil(node.items.length / columns);
-          const availableHeight = node.height - 35;
+          const titleLines = wrapLabel(node.title, Math.max(12, Math.floor((node.width - 10) / 6)));
+          const availableHeight = node.height - (titleLines.length > 1 ? 44 : 33);
           const itemHeight = Math.max(19, (availableHeight - gap * (rows - 1)) / rows);
           const itemWidth = (node.width - pad * 2 - gap * (columns - 1)) / columns;
           const className = ["svg-node", clickable && "is-clickable", active && "is-selected", node.passive && "is-passive", node.load && "is-load"].filter(Boolean).join(" ");
           const onKeyDown = (event: KeyboardEvent<SVGGElement>) => {
             if (clickable && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); onSelect(node.id); }
           };
+          if (node.load) {
+            const loadHeight = (node.height - 22) / node.items.length;
+            return (
+              <g key={node.id} className={className}>
+                {node.items.map((label, index) => {
+                  const centerY = node.y + index * loadHeight + loadHeight / 2;
+                  const lines = wrapLabel(label, 15);
+                  return (
+                    <g key={label} className="load-item">
+                      <circle cx={node.x + 17} cy={centerY} r="14" />
+                      <text className="load-symbol" x={node.x + 17} y={centerY + 5} textAnchor="middle">{loadSymbol(label)}</text>
+                      <text className="load-label" x={node.x + 38} y={centerY - (lines.length - 1) * 5 + 4}>
+                        {lines.map((line, lineIndex) => <tspan key={lineIndex} x={node.x + 38} dy={lineIndex ? 11 : 0}>{line}</tspan>)}
+                      </text>
+                    </g>
+                  );
+                })}
+                <text className="node-title load-title" x={node.x + node.width / 2} y={node.y + node.height} textAnchor="middle">{node.title}</text>
+              </g>
+            );
+          }
           return (
             <g key={node.id} className={className} role={clickable ? "button" : undefined} tabIndex={clickable ? 0 : undefined} aria-label={clickable ? `查看${node.title}的 TI 产品` : undefined} onClick={() => clickable && onSelect(node.id)} onKeyDown={onKeyDown}>
               <rect className="node-shell" x={node.x} y={node.y} width={node.width} height={node.height} rx="1" />
-              <rect className="node-accent" x={node.x} y={node.y} width="4" height={node.height} />
+              {active && <rect className="selection-outline" x={node.x - 5} y={node.y - 5} width={node.width + 10} height={node.height + 10} />}
               {node.items.map((label, index) => {
                 const col = index % columns;
                 const row = Math.floor(index / columns);
                 const x = node.x + pad + col * (itemWidth + gap);
                 const y = node.y + pad + row * (itemHeight + gap);
-                const lines = wrapLabel(label, itemWidth < 75 ? 7 : 11);
+                const lines = wrapLabel(label, Math.max(9, Math.floor(itemWidth / 5.7)));
                 return (
                   <g key={label}>
                     <rect className="function-chip" x={x} y={y} width={itemWidth} height={itemHeight} rx="1" />
-                    <text className="function-label" x={x + itemWidth / 2} y={y + itemHeight / 2 - (lines.length - 1) * 6 + 4} textAnchor="middle">
+                    <text className={`function-label${lines.length === 3 ? " compact" : ""}`} x={x + itemWidth / 2} y={y + itemHeight / 2 - (lines.length - 1) * 5.5 + 3.5} textAnchor="middle">
                       {lines.map((line, lineIndex) => <tspan key={lineIndex} x={x + itemWidth / 2} dy={lineIndex ? 12 : 0}>{line}</tspan>)}
                     </text>
                   </g>
                 );
               })}
-              <text className="node-title" x={node.x + node.width / 2} y={node.y + node.height - 9} textAnchor="middle">{node.title}</text>
+              <text className="node-title" x={node.x + node.width / 2} y={node.y + node.height - 9 - (titleLines.length - 1) * 5.5} textAnchor="middle">
+                {titleLines.map((line, lineIndex) => <tspan key={lineIndex} x={node.x + node.width / 2} dy={lineIndex ? 11 : 0}>{line}</tspan>)}
+              </text>
             </g>
           );
         })}
